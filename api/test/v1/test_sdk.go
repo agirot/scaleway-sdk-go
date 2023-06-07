@@ -39,8 +39,7 @@ var (
 	_ = namegenerator.GetRandomName
 )
 
-// API: no Auth Service for end-to-end testing
-//
+// API: no Auth Service for end-to-end testing.
 // Test is a fake service that aim to manage fake humans. It is used for internal and public end-to-end tests.
 //
 // This service don't use the Scaleway authentication service but a fake one.
@@ -62,15 +61,24 @@ func NewAPI(client *scw.Client) *API {
 type EyeColors string
 
 const (
+	// Unknown color
 	EyeColorsUnknown = EyeColors("unknown")
-	EyeColorsAmber   = EyeColors("amber")
-	EyeColorsBlue    = EyeColors("blue")
-	EyeColorsBrown   = EyeColors("brown")
-	EyeColorsGray    = EyeColors("gray")
-	EyeColorsGreen   = EyeColors("green")
-	EyeColorsHazel   = EyeColors("hazel")
-	EyeColorsRed     = EyeColors("red")
-	EyeColorsViolet  = EyeColors("violet")
+	// Rare and striking shade that typically features a golden or yellowish-brown hue
+	EyeColorsAmber = EyeColors("amber")
+	// Relatively rare, with the highest frequency found in eastern Europe
+	EyeColorsBlue = EyeColors("blue")
+	// Most common eye color in the world caused by a high concentration of melanin in the iris
+	EyeColorsBrown = EyeColors("brown")
+	// Relatively rare color which can change depending on the lighting conditions
+	EyeColorsGray = EyeColors("gray")
+	// Rare and unique color characterized by a combination of yellow, brown, and blue pigments
+	EyeColorsGreen = EyeColors("green")
+	// Brownish-yellow or greenish-brown with a hint of gold
+	EyeColorsHazel = EyeColors("hazel")
+	// Rare mutation that results in a reddish-pink hue
+	EyeColorsRed = EyeColors("red")
+	// Rare and striking shade that appears to be a mix of blue and purple
+	EyeColorsViolet = EyeColors("violet")
 )
 
 func (enum EyeColors) String() string {
@@ -99,8 +107,11 @@ func (enum *EyeColors) UnmarshalJSON(data []byte) error {
 type HumanStatus string
 
 const (
+	// Unknown status
 	HumanStatusUnknown = HumanStatus("unknown")
+	// The human is stopped
 	HumanStatusStopped = HumanStatus("stopped")
+	// The human is running
 	HumanStatusRunning = HumanStatus("running")
 )
 
@@ -130,12 +141,18 @@ func (enum *HumanStatus) UnmarshalJSON(data []byte) error {
 type ListHumansRequestOrderBy string
 
 const (
-	ListHumansRequestOrderByCreatedAtAsc  = ListHumansRequestOrderBy("created_at_asc")
+	// Ascending creation date
+	ListHumansRequestOrderByCreatedAtAsc = ListHumansRequestOrderBy("created_at_asc")
+	// Descending creation date
 	ListHumansRequestOrderByCreatedAtDesc = ListHumansRequestOrderBy("created_at_desc")
-	ListHumansRequestOrderByUpdatedAtAsc  = ListHumansRequestOrderBy("updated_at_asc")
+	// Ascending update date
+	ListHumansRequestOrderByUpdatedAtAsc = ListHumansRequestOrderBy("updated_at_asc")
+	// Descending update date
 	ListHumansRequestOrderByUpdatedAtDesc = ListHumansRequestOrderBy("updated_at_desc")
-	ListHumansRequestOrderByHeightAsc     = ListHumansRequestOrderBy("height_asc")
-	ListHumansRequestOrderByHeightDesc    = ListHumansRequestOrderBy("height_desc")
+	// Ascending height
+	ListHumansRequestOrderByHeightAsc = ListHumansRequestOrderBy("height_asc")
+	// Descending height
+	ListHumansRequestOrderByHeightDesc = ListHumansRequestOrderBy("height_desc")
 )
 
 func (enum ListHumansRequestOrderBy) String() string {
@@ -183,13 +200,9 @@ type Human struct {
 	HairCount uint64 `json:"hair_count"`
 
 	IsHappy bool `json:"is_happy"`
-	// EyesColor:
-	//
-	// Default value: unknown
+	// EyesColor: default value: unknown
 	EyesColor EyeColors `json:"eyes_color"`
-	// Status:
-	//
-	// Default value: unknown
+	// Status: default value: unknown
 	Status HumanStatus `json:"status"`
 
 	Name string `json:"name"`
@@ -215,8 +228,7 @@ type RegisterRequest struct {
 	Username string `json:"username"`
 }
 
-// Register: register a user
-//
+// Register: register a user.
 // Register a human and return a access-key and a secret-key that must be used in all other commands.
 //
 // Hint: you can use other test commands by setting the SCW_SECRET_KEY env variable.
@@ -247,9 +259,7 @@ type ListHumansRequest struct {
 	Page *int32 `json:"-"`
 
 	PageSize *uint32 `json:"-"`
-	// OrderBy:
-	//
-	// Default value: created_at_asc
+	// OrderBy: default value: created_at_asc
 	OrderBy ListHumansRequestOrderBy `json:"-"`
 
 	OrganizationID *string `json:"-"`
@@ -257,7 +267,7 @@ type ListHumansRequest struct {
 	ProjectID *string `json:"-"`
 }
 
-// ListHumans: list all your humans
+// ListHumans: list all your humans.
 func (s *API) ListHumans(req *ListHumansRequest, opts ...scw.RequestOption) (*ListHumansResponse, error) {
 	var err error
 
@@ -290,12 +300,11 @@ func (s *API) ListHumans(req *ListHumansRequest, opts ...scw.RequestOption) (*Li
 }
 
 type GetHumanRequest struct {
-	// HumanID: UUID of the human you want to get
+	// HumanID: UUID of the human you want to get.
 	HumanID string `json:"-"`
 }
 
-// GetHuman: get human details
-//
+// GetHuman: get human details.
 // Get the human details associated with the given id.
 func (s *API) GetHuman(req *GetHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
@@ -333,9 +342,7 @@ type CreateHumanRequest struct {
 	HairCount uint64 `json:"hair_count"`
 
 	IsHappy bool `json:"is_happy"`
-	// EyesColor:
-	//
-	// Default value: unknown
+	// EyesColor: default value: unknown
 	EyesColor EyeColors `json:"eyes_color"`
 	// Deprecated
 	// Precisely one of OrganizationID, ProjectID must be set.
@@ -347,7 +354,7 @@ type CreateHumanRequest struct {
 	ProjectID *string `json:"project_id,omitempty"`
 }
 
-// CreateHuman: create a new human
+// CreateHuman: create a new human.
 func (s *API) CreateHuman(req *CreateHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
 
@@ -382,7 +389,7 @@ func (s *API) CreateHuman(req *CreateHumanRequest, opts ...scw.RequestOption) (*
 }
 
 type UpdateHumanRequest struct {
-	// HumanID: UUID of the human you want to update
+	// HumanID: UUID of the human you want to update.
 	HumanID string `json:"-"`
 
 	Height *float64 `json:"height"`
@@ -398,16 +405,13 @@ type UpdateHumanRequest struct {
 	HairCount *uint64 `json:"hair_count"`
 
 	IsHappy *bool `json:"is_happy"`
-	// EyesColor:
-	//
-	// Default value: unknown
+	// EyesColor: default value: unknown
 	EyesColor EyeColors `json:"eyes_color"`
 
 	Name *string `json:"name"`
 }
 
-// UpdateHuman: update an existing human
-//
+// UpdateHuman: update an existing human.
 // Update the human associated with the given id.
 func (s *API) UpdateHuman(req *UpdateHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
@@ -437,12 +441,11 @@ func (s *API) UpdateHuman(req *UpdateHumanRequest, opts ...scw.RequestOption) (*
 }
 
 type DeleteHumanRequest struct {
-	// HumanID: UUID of the human you want to delete
+	// HumanID: UUID of the human you want to delete.
 	HumanID string `json:"-"`
 }
 
-// DeleteHuman: delete an existing human
-//
+// DeleteHuman: delete an existing human.
 // Delete the human associated with the given id.
 func (s *API) DeleteHuman(req *DeleteHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
@@ -467,12 +470,11 @@ func (s *API) DeleteHuman(req *DeleteHumanRequest, opts ...scw.RequestOption) (*
 }
 
 type RunHumanRequest struct {
-	// HumanID: UUID of the human you want to make run
+	// HumanID: UUID of the human you want to make run.
 	HumanID string `json:"-"`
 }
 
-// RunHuman: start a 1h running for the given human
-//
+// RunHuman: start a 1h running for the given human.
 // Start a one hour running for the given human.
 func (s *API) RunHuman(req *RunHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
@@ -502,13 +504,11 @@ func (s *API) RunHuman(req *RunHumanRequest, opts ...scw.RequestOption) (*Human,
 }
 
 type SmokeHumanRequest struct {
-	// Deprecated: HumanID: UUID of the human you want to make smoking
+	// Deprecated: HumanID: UUID of the human you want to make smoking.
 	HumanID *string `json:"-"`
 }
 
-// Deprecated: SmokeHuman: make a human smoke
-//
-// Make a human smoke.
+// Deprecated: SmokeHuman: make a human smoke.
 func (s *API) SmokeHuman(req *SmokeHumanRequest, opts ...scw.RequestOption) (*Human, error) {
 	var err error
 

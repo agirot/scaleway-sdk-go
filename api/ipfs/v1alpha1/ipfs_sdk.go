@@ -39,7 +39,8 @@ var (
 	_ = namegenerator.GetRandomName
 )
 
-// API: pinning service ipfs API for Scaleway
+// API: pinning service ipfs API for Scaleway.
+// Ipfs pinning service v1alpha1.
 type API struct {
 	client *scw.Client
 }
@@ -158,9 +159,7 @@ type ListVolumesResponse struct {
 
 type Pin struct {
 	PinID string `json:"pin_id"`
-	// Status:
-	//
-	// Default value: unknown_status
+	// Status: default value: unknown_status
 	Status PinStatus `json:"status"`
 
 	CreatedAt *time.Time `json:"created_at"`
@@ -173,7 +172,7 @@ type Pin struct {
 }
 
 type PinCID struct {
-	Cid string `json:"cid"`
+	Cid *string `json:"cid"`
 
 	Name *string `json:"name"`
 
@@ -184,6 +183,8 @@ type PinCID struct {
 
 type PinCIDMeta struct {
 	AppID string `json:"app_id"`
+
+	URL *string `json:"url"`
 }
 
 type PinInfo struct {
@@ -226,15 +227,15 @@ func (s *API) Regions() []scw.Region {
 }
 
 type CreateVolumeRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	ProjectID string `json:"project_id"`
+
+	Name string `json:"name"`
 }
 
-// CreateVolume: create volume in S3 bucket
+// CreateVolume: create volume.
 func (s *API) CreateVolume(req *CreateVolumeRequest, opts ...scw.RequestOption) (*Volume, error) {
 	var err error
 
@@ -273,15 +274,13 @@ func (s *API) CreateVolume(req *CreateVolumeRequest, opts ...scw.RequestOption) 
 }
 
 type GetVolumeRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"-"`
 }
 
-// GetVolume: get information about volume
+// GetVolume: get information about volume.
 func (s *API) GetVolume(req *GetVolumeRequest, opts ...scw.RequestOption) (*Volume, error) {
 	var err error
 
@@ -314,9 +313,7 @@ func (s *API) GetVolume(req *GetVolumeRequest, opts ...scw.RequestOption) (*Volu
 }
 
 type ListVolumesRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	ProjectID string `json:"-"`
@@ -324,13 +321,11 @@ type ListVolumesRequest struct {
 	Page *int32 `json:"-"`
 
 	PageSize *uint32 `json:"-"`
-	// OrderBy:
-	//
-	// Default value: created_at_asc
+	// OrderBy: default value: created_at_asc
 	OrderBy ListVolumesRequestOrderBy `json:"-"`
 }
 
-// ListVolumes: list volumes in project-id
+// ListVolumes: list volumes in project-id.
 func (s *API) ListVolumes(req *ListVolumesRequest, opts ...scw.RequestOption) (*ListVolumesResponse, error) {
 	var err error
 
@@ -376,9 +371,7 @@ func (s *API) ListVolumes(req *ListVolumesRequest, opts ...scw.RequestOption) (*
 }
 
 type UpdateVolumeRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"-"`
@@ -388,7 +381,7 @@ type UpdateVolumeRequest struct {
 	Tags *[]string `json:"tags"`
 }
 
-// UpdateVolume: update volume name or tag
+// UpdateVolume: update volume name or tag.
 func (s *API) UpdateVolume(req *UpdateVolumeRequest, opts ...scw.RequestOption) (*Volume, error) {
 	var err error
 
@@ -426,15 +419,13 @@ func (s *API) UpdateVolume(req *UpdateVolumeRequest, opts ...scw.RequestOption) 
 }
 
 type DeleteVolumeRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"-"`
 }
 
-// DeleteVolume: delete volume in S3 bucket
+// DeleteVolume: delete volume.
 func (s *API) DeleteVolume(req *DeleteVolumeRequest, opts ...scw.RequestOption) error {
 	var err error
 
@@ -465,9 +456,7 @@ func (s *API) DeleteVolume(req *DeleteVolumeRequest, opts ...scw.RequestOption) 
 }
 
 type CreatePinByURLRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"volume_id"`
@@ -479,7 +468,7 @@ type CreatePinByURLRequest struct {
 	PinOptions *PinOptions `json:"pin_options"`
 }
 
-// CreatePinByURL: add content in s3 bucket
+// CreatePinByURL: add content in volume by url.
 func (s *API) CreatePinByURL(req *CreatePinByURLRequest, opts ...scw.RequestOption) (*Pin, error) {
 	var err error
 
@@ -513,9 +502,7 @@ func (s *API) CreatePinByURL(req *CreatePinByURLRequest, opts ...scw.RequestOpti
 }
 
 type CreatePinByCIDRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"volume_id"`
@@ -531,7 +518,7 @@ type CreatePinByCIDRequest struct {
 	PinOptions *PinOptions `json:"pin_options"`
 }
 
-// CreatePinByCID: add content in s3 bucket
+// CreatePinByCID: add content in volume by cid.
 func (s *API) CreatePinByCID(req *CreatePinByCIDRequest, opts ...scw.RequestOption) (*Pin, error) {
 	var err error
 
@@ -564,60 +551,8 @@ func (s *API) CreatePinByCID(req *CreatePinByCIDRequest, opts ...scw.RequestOpti
 	return &resp, nil
 }
 
-type CreatePinByRawRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
-	Region scw.Region `json:"-"`
-
-	VolumeID string `json:"volume_id"`
-
-	Content []byte `json:"content"`
-
-	MimeType *string `json:"mime_type"`
-
-	Name *string `json:"name"`
-
-	PinOptions *PinOptions `json:"pin_options"`
-}
-
-// CreatePinByRaw: add content in s3 bucket
-func (s *API) CreatePinByRaw(req *CreatePinByRawRequest, opts ...scw.RequestOption) (*Pin, error) {
-	var err error
-
-	if req.Region == "" {
-		defaultRegion, _ := s.client.GetDefaultRegion()
-		req.Region = defaultRegion
-	}
-
-	if fmt.Sprint(req.Region) == "" {
-		return nil, errors.New("field Region cannot be empty in request")
-	}
-
-	scwReq := &scw.ScalewayRequest{
-		Method:  "POST",
-		Path:    "/ipfs/v1alpha1/regions/" + fmt.Sprint(req.Region) + "/pins/create-by-raw",
-		Headers: http.Header{},
-	}
-
-	err = scwReq.SetBody(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var resp Pin
-
-	err = s.client.Do(scwReq, &resp, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &resp, nil
-}
-
 type ReplacePinRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	PinID string `json:"-"`
@@ -672,9 +607,7 @@ func (s *API) ReplacePin(req *ReplacePinRequest, opts ...scw.RequestOption) (*Re
 }
 
 type GetPinRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	PinID string `json:"-"`
@@ -682,7 +615,7 @@ type GetPinRequest struct {
 	VolumeID string `json:"-"`
 }
 
-// GetPin: get pin id create when content is add in s3 bucket
+// GetPin: get pin id in volume.
 func (s *API) GetPin(req *GetPinRequest, opts ...scw.RequestOption) (*Pin, error) {
 	var err error
 
@@ -719,28 +652,25 @@ func (s *API) GetPin(req *GetPinRequest, opts ...scw.RequestOption) (*Pin, error
 }
 
 type ListPinsRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	VolumeID string `json:"-"`
 
 	ProjectID *string `json:"-"`
 
+	OrganizationID *string `json:"-"`
+
 	Page *int32 `json:"-"`
 
 	PageSize *uint32 `json:"-"`
-	// OrderBy:
-	//
-	// Default value: created_at_asc
+	// OrderBy: default value: created_at_asc
 	OrderBy ListPinsRequestOrderBy `json:"-"`
-	// Status:
-	//
-	// Default value: unknown_status
+	// Status: default value: unknown_status
 	Status PinStatus `json:"-"`
 }
 
+// ListPins: list pins in specific volume.
 func (s *API) ListPins(req *ListPinsRequest, opts ...scw.RequestOption) (*ListPinsResponse, error) {
 	var err error
 
@@ -757,6 +687,7 @@ func (s *API) ListPins(req *ListPinsRequest, opts ...scw.RequestOption) (*ListPi
 	query := url.Values{}
 	parameter.AddToQuery(query, "volume_id", req.VolumeID)
 	parameter.AddToQuery(query, "project_id", req.ProjectID)
+	parameter.AddToQuery(query, "organization_id", req.OrganizationID)
 	parameter.AddToQuery(query, "page", req.Page)
 	parameter.AddToQuery(query, "page_size", req.PageSize)
 	parameter.AddToQuery(query, "order_by", req.OrderBy)
@@ -783,9 +714,7 @@ func (s *API) ListPins(req *ListPinsRequest, opts ...scw.RequestOption) (*ListPi
 }
 
 type DeletePinRequest struct {
-	// Region:
-	//
-	// Region to target. If none is passed will use default region from the config
+	// Region: region to target. If none is passed will use default region from the config.
 	Region scw.Region `json:"-"`
 
 	PinID string `json:"-"`
@@ -793,7 +722,7 @@ type DeletePinRequest struct {
 	VolumeID string `json:"-"`
 }
 
-// DeletePin: remove by pin id
+// DeletePin: remove by pin id.
 func (s *API) DeletePin(req *DeletePinRequest, opts ...scw.RequestOption) error {
 	var err error
 

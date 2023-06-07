@@ -39,7 +39,7 @@ var (
 	_ = namegenerator.GetRandomName
 )
 
-// API: marketplace API
+// API: marketplace API.
 type API struct {
 	client *scw.Client
 }
@@ -153,26 +153,25 @@ type Category struct {
 	Description string `json:"description"`
 }
 
-// Image: image
+// Image: image.
 type Image struct {
-	// ID: UUID of this image
+	// ID: UUID of this image.
 	ID string `json:"id"`
-	// Name: name of the image
+	// Name: name of the image.
 	Name string `json:"name"`
-	// Description: text description of this image
+	// Description: text description of this image.
 	Description string `json:"description"`
-	// Logo: URL of this image's logo
+	// Logo: URL of this image's logo.
 	Logo string `json:"logo"`
-	// Categories: list of categories this image belongs to
+	// Categories: list of categories this image belongs to.
 	Categories []string `json:"categories"`
-	// CreatedAt: creation date of this image
+	// CreatedAt: creation date of this image.
 	CreatedAt *time.Time `json:"created_at"`
-	// UpdatedAt: date of the last modification of this image
+	// UpdatedAt: date of the last modification of this image.
 	UpdatedAt *time.Time `json:"updated_at"`
-	// ValidUntil: expiration date of this image
+	// ValidUntil: expiration date of this image.
 	ValidUntil *time.Time `json:"valid_until"`
-	// Label: label of this image
-	//
+	// Label: label of this image.
 	// Typically an identifier for a distribution (ex. "ubuntu_focal").
 	Label string `json:"label"`
 }
@@ -201,56 +200,55 @@ type ListVersionsResponse struct {
 	TotalCount uint32 `json:"total_count"`
 }
 
-// LocalImage: local image
+// LocalImage: local image.
 type LocalImage struct {
-	// ID: UUID of this local image
-	//
+	// ID: UUID of this local image.
 	// Version you will typically use to define an image in an API call.
 	ID string `json:"id"`
-	// CompatibleCommercialTypes: list of all commercial types that are compatible with this local image
+	// CompatibleCommercialTypes: list of all commercial types that are compatible with this local image.
 	CompatibleCommercialTypes []string `json:"compatible_commercial_types"`
-	// Arch: supported architecture for this local image
+	// Arch: supported architecture for this local image.
 	Arch string `json:"arch"`
-	// Zone: availability Zone where this local image is available
+	// Zone: availability Zone where this local image is available.
 	Zone scw.Zone `json:"zone"`
-	// Label: image label this image belongs to
+	// Label: image label this image belongs to.
 	Label string `json:"label"`
 }
 
-// Version: version
+// Version: version.
 type Version struct {
-	// ID: UUID of this version
+	// ID: UUID of this version.
 	ID string `json:"id"`
-	// Name: name of this version
+	// Name: name of this version.
 	Name string `json:"name"`
-	// CreatedAt: creation date of this image version
+	// CreatedAt: creation date of this image version.
 	CreatedAt *time.Time `json:"created_at"`
-	// UpdatedAt: date of the last modification of this version
+	// UpdatedAt: date of the last modification of this version.
 	UpdatedAt *time.Time `json:"updated_at"`
-	// PublishedAt: date this version was officially published
+	// PublishedAt: date this version was officially published.
 	PublishedAt *time.Time `json:"published_at"`
 }
 
 // Service API
 
 type ListImagesRequest struct {
-	// PageSize: a positive integer lower or equal to 100 to select the number of items to display
+	// PageSize: a positive integer lower or equal to 100 to select the number of items to display.
 	PageSize *uint32 `json:"-"`
-	// Page: a positive integer to choose the page to display
+	// Page: a positive integer to choose the page to display.
 	Page *int32 `json:"-"`
-	// OrderBy: ordering to use
-	//
+	// OrderBy: ordering to use.
 	// Default value: name_asc
 	OrderBy ListImagesRequestOrderBy `json:"-"`
-	// Arch: choose for which machine architecture to return images
+	// Arch: choose for which machine architecture to return images.
 	Arch *string `json:"-"`
-	// Category: choose the category of images to get
+	// Category: choose the category of images to get.
 	Category *string `json:"-"`
-	// IncludeEol: choose to include end-of-life images
+	// IncludeEol: choose to include end-of-life images.
 	IncludeEol bool `json:"-"`
 }
 
-// ListImages: list marketplace images
+// ListImages: list marketplace images.
+// List all available images on the marketplace, their UUID, CPU architecture and description.
 func (s *API) ListImages(req *ListImagesRequest, opts ...scw.RequestOption) (*ListImagesResponse, error) {
 	var err error
 
@@ -284,11 +282,12 @@ func (s *API) ListImages(req *ListImagesRequest, opts ...scw.RequestOption) (*Li
 }
 
 type GetImageRequest struct {
-	// ImageID: display the image name
+	// ImageID: display the image name.
 	ImageID string `json:"-"`
 }
 
-// GetImage: get a specific marketplace image
+// GetImage: get a specific marketplace image.
+// Get detailed information about a marketplace image, specified by its `image_id` (UUID format).
 func (s *API) GetImage(req *GetImageRequest, opts ...scw.RequestOption) (*Image, error) {
 	var err error
 
@@ -317,12 +316,12 @@ type ListVersionsRequest struct {
 	PageSize *uint32 `json:"-"`
 
 	Page *int32 `json:"-"`
-	// OrderBy:
-	//
-	// Default value: created_at_asc
+	// OrderBy: default value: created_at_asc
 	OrderBy ListVersionsRequestOrderBy `json:"-"`
 }
 
+// ListVersions: list versions of an Image.
+// Get a list of all available version of an image, specified by its `image_id` (UUID format).
 func (s *API) ListVersions(req *ListVersionsRequest, opts ...scw.RequestOption) (*ListVersionsResponse, error) {
 	var err error
 
@@ -357,6 +356,8 @@ type GetVersionRequest struct {
 	VersionID string `json:"-"`
 }
 
+// GetVersion: get a specific image version.
+// Get information such as the name, creation date, last update and published date for an image version specified by its `version_id` (UUID format).
 func (s *API) GetVersion(req *GetVersionRequest, opts ...scw.RequestOption) (*Version, error) {
 	var err error
 
@@ -387,23 +388,22 @@ type ListLocalImagesRequest struct {
 	PageSize *uint32 `json:"-"`
 
 	Page *int32 `json:"-"`
-	// OrderBy:
-	//
-	// Default value: created_at_asc
+	// OrderBy: default value: created_at_asc
 	OrderBy ListLocalImagesRequestOrderBy `json:"-"`
 
 	ImageLabel *string `json:"-"`
 
-	Zone scw.Zone `json:"-"`
+	Zone *scw.Zone `json:"-"`
 }
 
-// ListLocalImages: list local images from a specific image or version
+// ListLocalImages: list local images from a specific image or version.
+// List information about local images in a specific Availability Zone, specified by its `image_id` (UUID format), `version_id` (UUID format) or `image_label`. Only one of these three parameters may be set.
 func (s *API) ListLocalImages(req *ListLocalImagesRequest, opts ...scw.RequestOption) (*ListLocalImagesResponse, error) {
 	var err error
 
-	if req.Zone == "" {
-		defaultZone, _ := s.client.GetDefaultZone()
-		req.Zone = defaultZone
+	defaultZone, exist := s.client.GetDefaultZone()
+	if (req.Zone == nil || *req.Zone == "") && exist {
+		req.Zone = &defaultZone
 	}
 
 	defaultPageSize, exist := s.client.GetDefaultPageSize()
@@ -440,6 +440,8 @@ type GetLocalImageRequest struct {
 	LocalImageID string `json:"-"`
 }
 
+// GetLocalImage: get a specific local image by ID.
+// Get detailed information about a local image, including compatible commercial types, supported architecture, labels and the Availability Zone of the image, specified by its `local_image_id` (UUID format).
 func (s *API) GetLocalImage(req *GetLocalImageRequest, opts ...scw.RequestOption) (*LocalImage, error) {
 	var err error
 
@@ -468,6 +470,8 @@ type ListCategoriesRequest struct {
 	Page *int32 `json:"-"`
 }
 
+// ListCategories: list existing image categories.
+// Get a list of all existing categories. The output can be paginated.
 func (s *API) ListCategories(req *ListCategoriesRequest, opts ...scw.RequestOption) (*ListCategoriesResponse, error) {
 	var err error
 
@@ -500,6 +504,8 @@ type GetCategoryRequest struct {
 	CategoryID string `json:"-"`
 }
 
+// GetCategory: get a specific category.
+// Get information about a specific category of the marketplace catalog, specified by its `category_id` (UUID format).
 func (s *API) GetCategory(req *GetCategoryRequest, opts ...scw.RequestOption) (*Category, error) {
 	var err error
 
